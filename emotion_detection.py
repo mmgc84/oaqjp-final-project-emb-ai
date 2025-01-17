@@ -3,7 +3,8 @@ emotion_detection.py
 
 This module provides functions for performing emotion_detection.py on text data.
 It includes the main function `emotion_detection.py` which analyzes the emotion
-of a given text and returns a text attribute of the response object.
+of a given text and returns a a dictionary of emotions scores, including the 
+dominant emotion.
 """
 
 import json
@@ -15,14 +16,21 @@ def emotion_detector(text_to_analyse):
 
     This function takes a string input, `text_to_analyse`, and performs
     emotion detection using a pre-defined model or service. It returns
-    a text attribute of the response object.
+    a dictionary of emotions scores, including the dominant emotion.
 
     Parameters:
     text_to_analyse (str): The text to be analyzed for emotion.
 
     Returns:
-    A text attribute of the response object, e.g.,
-        '{"emotionPredictions":[{"emotion":{"anger":0.01364663, [SNIP]'
+    A dictionary of emotions scores, including the dominant emotion, e.g.,
+        '{
+        'anger': anger_score,
+        'disgust': disgust_score,
+        'fear': fear_score,
+        'joy': joy_score,
+        'sadness': sadness_score,
+        'dominant_emotion': '<name of the dominant emotion>'
+        }'
     """
 
     # URL of the emotion detection service
@@ -40,5 +48,17 @@ def emotion_detector(text_to_analyse):
     # Sending a POST request to the emotion detection API
     response = requests.post(url, json = myobj, headers=header, timeout=10)
 
-    # Returning a text attribute of the response object.
-    return response.text
+    # Parsing the JSON response from the API
+    formatted_response = json.loads(response.text)
+
+    # Extract a dictionary of emotions scores, including anger, disgust, fear, joy and sadness
+    emotion_scores = formatted_response['emotionPredictions'][0]['emotion']
+
+    # Find the dominant emotion
+    dominant_emotion = max(emotion_scores, key=emotion_scores.get)
+
+    # Add the dominant emotion to the dictionary
+    emotion_scores['dominant_emotion'] = dominant_emotion
+
+    # Returning a dictionary of emotions scores, including the dominant emotion
+    return emotion_scores
