@@ -19,10 +19,6 @@ def sent_detector():
     # Retrieve the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
 
-    # Check if the input text is blank
-    if not text_to_analyze.strip():
-        return "Input text cannot be blank. Please provide valid text."
-
     # Pass the text to the emotion_detector function and store the response
     response = emotion_detector(text_to_analyze)
 
@@ -33,6 +29,9 @@ def sent_detector():
     joy_score = response['joy']
     sadness_score = response['sadness']
     dominant_emotion = response['dominant_emotion']
+
+    if dominant_emotion is None:
+        return "Input text cannot be blank. Please provide valid text."
 
     # Formatted result of emotions scores, including the     dominant emotion.
     formatted_result = (
