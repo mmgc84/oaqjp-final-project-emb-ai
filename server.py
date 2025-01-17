@@ -39,8 +39,8 @@ def sent_detector():
         f"'disgust': {disgust_score}, 'fear': {fear_score}, 'joy': {joy_score} "
         f"and 'sadness': {sadness_score}. The dominant emotion is {dominant_emotion}."
     )
-    
-    # Returns formatted_result 
+
+    # Returns formatted_result
     return formatted_result
 
 @app.route("/")
